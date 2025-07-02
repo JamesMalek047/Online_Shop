@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURUM</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<!-- Reusable Product Modal -->
+    <div id="productModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <img id="modalImage" src="" alt="">
+        <h3 id="modalTitle"></h3>
+        <p id="modalPrice"></p>
+        <button id="addToCartBtn">Add to Cart</button>
+    </div>
+    </div>
+
+<body>
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="logo">AURUM</div>
+    <div class="search">
+      <i class="fas fa-search"></i>
+      <input type="text" placeholder="Search Fragrances">
+    </div>
+    <div class="icons">
+      <a href="cart.html" class="cart-link" aria-label="Go to Cart">
+        <i class="fas fa-shopping-cart"></i>
+      </a>
+      <i class="fas fa-bars"></i>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="hero">
+    <div class="hero-image">
+      <img src="perfume.png" alt="Perfume bottle on silk">
+    </div>
+    <div class="hero-text">
+      <h1>Where elegance<br>lingers long after<br>you’ve left the room.</h1>
+    </div>
+  </main>
+
+  <!-- Bestsellers Carousel -->
+  <section class="bestsellers">
+    <h2>AURUM's Finest</h2>
+    <div class="carousel">
+      <button class="arrow left" id="prevBestsellers">&#x276E;</button>
+      <div class="carousel-track" id="carouselTrackBestsellers">
+        <div class="card" onclick="openModal('Aboland', 139, 'aboland.png')">
+          <img src="aboland.png" alt="Aboland">
+          <h3>Aboland</h3>
+          <p>$139</p>
+        </div>
+        <div class="card" onclick="openModal('Miss Dior', 160, 'missdior.png')">
+          <img src="missdior.png" alt="Miss Dior">
+          <h3>Miss Dior</h3>
+          <p>$160</p>
+        </div>
+        <div class="card" onclick="openModal('Dior Sauvage', 160, 'diorsauvage.png')">
+          <img src="diorsauvage.png" alt="Dior Sauvage">
+          <h3>Dior Sauvage</h3>
+          <p>$160</p>
+        </div>
+        <div class="card" onclick="openModal('YSL Libre', 180, 'yslLibre.png')">
+          <img src="yslLibre.png" alt="YSL Libre">
+          <h3>YSL Libre</h3>
+          <p>$180</p>
+        </div>
+        <div class="card" onclick="openModal('myway', 160, 'myway.png')">
+          <img src="myway.png" alt="My Way">
+          <h3>My Way</h3>
+          <p>$160</p>
+        </div>
+      </div>
+      <button class="arrow right" id="nextBestsellers">&#x276F;</button>
+    </div>
+  </section>
+
+  <section class="sale">
+  <h2>Refined Selections - Now Within Reach</h2>
+  <div class="carousel">
+    <button class="arrow left" id="prevSale">&#x276E;</button>
+    <div class="carousel-track" id="carouselTrackSale">
+      <div class="card" onclick="openModal('Kayali', 139, 'kayali.png')">
+        <img src="kayali.png" alt="Kayali">
+        <h3>Kayali</h3>
+        <div class="price">
+            <span class="original-price">$160</span>
+            <span class="sale-price">$139</span>
+        </div>
+      </div>
+      <div class="card" onclick="openModal('lattafa', 139, 'lattafa.png')">
+        <img src="lattafa.png" alt="Lataffa Yara">
+        <h3>Lataffa Yara</h3>
+        <div class="price">
+            <span class="original-price">$160</span>
+            <span class="sale-price">$139</span>
+        </div>
+      </div>
+      <div class="card" onclick="openModal('Bleu Chanel', 139, 'bleuchanel.png')">
+        <img src="bleuchanel.png" alt="Bleu Chanel">
+        <h3>Bleu Chanel</h3>
+        <div class="price">
+            <span class="original-price">$160</span>
+            <span class="sale-price">$139</span>
+        </div>
+      </div>
+      <div class="card" onclick="openModal('Nautica Voyage', 139, 'nauticavoyage.png')">
+        <img src="nauticavoyage.png" alt="Nautica Voyage">
+         <h3>Nautica Voyage</h3>
+         <div class="price">
+            <span class="original-price">$160</span>
+            <span class="sale-price">$139</span>
+        </div>
+        </div>
+    </div>
+    <button class="arrow right" id="nextSale">&#x276F;</button>
+  </div>
+  </section>
+
+   <!-- JavaScript -->
+  <script>
+    // Carousel Logic for Bestsellers
+    const carouselB = document.getElementById('carouselTrackBestsellers');
+    document.getElementById('nextBestsellers').addEventListener('click', () => {
+      carouselB.scrollBy({ left: 220, behavior: 'smooth' });
+    });
+    document.getElementById('prevBestsellers').addEventListener('click', () => {
+      carouselB.scrollBy({ left: -220, behavior: 'smooth' });
+    });
+
+    // Carousel Logic for Sale
+    const carouselS = document.getElementById('carouselTrackSale');
+    document.getElementById('nextSale').addEventListener('click', () => {
+      carouselS.scrollBy({ left: 220, behavior: 'smooth' });
+    });
+    document.getElementById('prevSale').addEventListener('click', () => {
+      carouselS.scrollBy({ left: -220, behavior: 'smooth' });
+    });
+
+    // Modal Logic
+    const modal = document.getElementById('productModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+
+    function openModal(imgSrc, title, price) {
+      modalImage.src = imgSrc;
+      modalTitle.textContent = title;
+      modalPrice.textContent = price;
+      modal.style.display = 'block';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    function addToCart(name, price, image) {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existing = cart.find(item => item.name === name);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({ name, price, image, quantity: 1 });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert(`${name} has been added to your cart.`);
+    }
+
+    document.querySelectorAll('.card img').forEach(img => {
+        img.addEventListener('click', () => {
+            const card = img.closest('.card');
+            const title = card.querySelector('h3').textContent;
+            const salePrice = card.querySelector('.sale-price');
+            const price = salePrice ? salePrice.textContent : card.querySelector('p, .price span').textContent;
+
+            openModal(img.src, title, price);
+        });
+    });
+
+    window.onclick = function (event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+  </script>
+
+    <script>
+  let currentItem = {};
+
+  function openModal(name, price, image) {
+    currentItem = { name, price, image };
+
+    document.getElementById('modalImage').src = image;
+    document.getElementById('modalImage').alt = name;
+    document.getElementById('modalTitle').textContent = name;
+    document.getElementById('modalPrice').textContent = `$${price}`;
+    
+    document.getElementById('productModal').style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('productModal').style.display = 'none';
+  }
+
+  function addToCart() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const existing = cart.find(item => item.name === currentItem.name);
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({ ...currentItem, quantity: 1 });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${currentItem.name} has been added to your cart.`);
+    closeModal();
+  }
+
+  document.getElementById('addToCartBtn').addEventListener('click', addToCart);
+</script>
+</body>
+</html>
