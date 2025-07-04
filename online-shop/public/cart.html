@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Cart</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>Shopping Cart</header>
+  <div class="container">
+    <!-- Step 1: Cart Overview -->
+    <div class="step active" id="step-1">
+      <h2>Your Cart</h2>
+      <div id="cart-items"></div>
+      <p id="empty-message" style="display:none; color: #6b2032; font-style: italic; margin-top: 20px;">Your cart is currently empty.</p>
+      <div class="nav-buttons">
+        <a href="index2.html" class="home-button">← Back to Home</a>
+        <button id="proceed-btn">Proceed to Checkout</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Personal Information -->
+    <div class="step" id="step-2">
+      <h2>Personal Information</h2>
+      <label>Full Name<input type="text" required></label>
+      <label>Email Address<input type="email" required></label>
+      <label>Shipping Address<input type="text" required></label>
+      <div class="nav-buttons">
+        <button onclick="prevStep()">Back</button>
+        <button onclick="nextStep()">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Payment Details -->
+    <div class="step" id="step-3">
+      <h2>Payment</h2>
+      <label>Cardholder Name<input type="text" required></label>
+      <label>Card Number<input type="text" required></label>
+      <label>Expiry Date<input type="text" placeholder="MM/YY" required></label>
+      <label>CVV<input type="text" required></label>
+      <div class="nav-buttons">
+        <button onclick="prevStep()">Back</button>
+        <button onclick="alert('Order placed!')">Place Order</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+
+    function showStep(step) {
+      document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+      document.getElementById(`step-${step}`).classList.add('active');
+    }
+
+    function nextStep() {
+      if (currentStep < 3) {
+        currentStep++;
+        showStep(currentStep);
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    }
+
+    function removeItem(itemId) {
+      const item = document.getElementById(itemId);
+      if (item) {
+        item.remove();
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.splice(itemId, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        checkEmptyCart();
+      }
+    }
+
+    function updatePrice(input) {
+      const quantity = parseInt(input.value, 10);
+      const pricePerUnit = parseFloat(input.dataset.price);
+      const total = quantity * pricePerUnit;
+      const totalSpan = input.parentElement.querySelector('.item-total');
+      totalSpan.textContent = `$${total.toFixed(2)}`;
+    }
+
+    function loadCart() {
+      const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+      const container = document.getElementById('cart-items');
+      container.innerHTML = '';
+
+      cartItems.forEach((item, index) => {
+        const itemId = `item-${index}`;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.id = itemId;
+        div.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <span class="item-name">${item.name}</span>
+          <input type="number" value="${item.quantity}" min="1" class="quantity" data-price="${item.price}" onchange="updatePrice(this)" />
+          <span class="item-total">$${(item.price * item.quantity).toFixed(2)}</span>
+          <button class="remove-btn" onclick="removeItem('${itemId}')">Remove</button>
+        `;
+        container.appendChild(div);
+      });
+
+      checkEmptyCart();
+    }
+
+    function checkEmptyCart() {
+      const container = document.getElementById('cart-items');
+      const emptyMsg = document.getElementById('empty-message');
+      const proceedBtn = document.getElementById('proceed-btn');
+      const isEmpty = container.children.length === 0;
+      emptyMsg.style.display = isEmpty ? 'block' : 'none';
+      proceedBtn.disabled = false;
+      proceedBtn.onclick = () => {
+        if (isEmpty) {
+          alert("Your cart is empty. Please add items before proceeding to checkout.");
+        } else {
+          nextStep();
+        }
+      };
+    }
+
+    window.onload = loadCart;
+  </script>
+</body>
+</html>

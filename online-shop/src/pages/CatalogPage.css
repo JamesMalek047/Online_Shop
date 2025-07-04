@@ -609,3 +609,69 @@ h1 {
   color: white;
 }
 
+/* Dropdown container */
+.dropdown-menu {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  margin-top: 6px;
+  padding: 0.3rem 0;
+  z-index: 1000;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual item */
+.dropdown-item {
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #2c2c2c;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover,
+.dropdown-item.active {
+  background-color: #521e1e; /* Deep burgundy */
+  color: white;
+}
+
+/* Nav item (Catalog) */
+.nav-item {
+  position: relative;
+  display: inline-block;
+}
+
+/* Nav button for Catalog */
+.nav-button {
+  background-color: transparent;
+  border: 2px solid #521e1e;
+  color: #521e1e;
+  border-radius: 30px;
+  padding: 10px 24px;        /* ⬅️ Increased size */
+  font-size: 1rem;           /* ⬅️ Bigger text */
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-button:hover {
+  background-color: #521e1e;
+  color: white;
+}
+
+.navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1.2rem; /* ⬅️ controls spacing between Home & Catalog */
+}

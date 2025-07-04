@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import './CatalogPage.css';
 
@@ -10,7 +12,7 @@ const perfumes = [
   { id: 4, name: 'Kayali', brand: 'Kayali', price: 139.00, gender: 'women', scent: 'oriental', season: 'fall', age: 'adult', intensity: 'light', occasion: 'romantic', origin: 'uae', image: 'Cologne4.png', description: 'Warm and sweet.' },
   { id: 5, name: 'Lattafa Yara', brand: 'Lattafa', price: 100.00, gender: 'women', scent: 'floral', season: 'spring', age: 'teen', intensity: 'light', occasion: 'daily', origin: 'uae', image: 'Cologne5.png', description: 'Fruity and powdery.' },
   { id: 6, name: 'Bleu Chanel', brand: 'Chanel', price: 190.00, gender: 'men', scent: 'woody', season: 'fall', age: 'adult', intensity: 'strong', occasion: 'formal', origin: 'france', image: 'Cologne6.png', description: 'Crisp and fresh.' },
-   { id: 7, name: 'YSL Essence 7', brand: 'YSL', price: 135.50, gender: 'women', scent: 'floral', season: 'spring', age: 'young', intensity: 'medium', occasion: 'casual', origin: 'france', image: 'GenericCologne.png', description: 'Floral scent for spring use with a touch of casual notes.' },
+  { id: 7, name: 'YSL Essence 7', brand: 'YSL', price: 135.50, gender: 'women', scent: 'floral', season: 'spring', age: 'young', intensity: 'medium', occasion: 'casual', origin: 'france', image: 'GenericCologne.png', description: 'Floral scent for spring use with a touch of casual notes.' },
   { id: 8, name: 'Lattafa Essence 8', brand: 'Lattafa', price: 120.99, gender: 'men', scent: 'woody', season: 'fall', age: 'adult', intensity: 'strong', occasion: 'formal', origin: 'uae', image: 'GenericCologne.png', description: 'Woody scent for fall use with a touch of formal notes.' },
   { id: 9, name: 'Tom Ford Essence 9', brand: 'Tom Ford', price: 199.99, gender: 'men', scent: 'fresh', season: 'summer', age: 'adult', intensity: 'medium', occasion: 'everyday', origin: 'italy', image: 'GenericCologne.png', description: 'Fresh scent for summer use with a touch of everyday notes.' },
   { id: 10, name: 'Versace Essence 10', brand: 'Versace', price: 145.00, gender: 'women', scent: 'oriental', season: 'winter', age: 'teen', intensity: 'light', occasion: 'romantic', origin: 'italy', image: 'GenericCologne.png', description: 'Oriental scent for winter use with a touch of romantic notes.' },
@@ -56,6 +58,22 @@ const perfumes = [
   { id: 50, name: 'Tom Ford Noir Femme', brand: 'Tom Ford', price: 210.00, gender: 'women', scent: 'oriental', season: 'fall', age: 'adult', intensity: 'strong', occasion: 'evening', origin: 'usa', image: 'GenericCologne.png', description: 'Feminine intensity in dark elegance.' }
 ];
 
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+function addToCart(perfume) {
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const index = cart.findIndex(item => item.name === perfume.name);
+  if (index > -1) {
+    cart[index].quantity += 1;
+  } else {
+    cart.push({ ...perfume, quantity: 1 });
+  }
+  localStorage.setItem('cart', JSON.stringify(cart));
+  alert(`${perfume.name} added to cart!`);
+}
+
 function PerfumeCard({ perfume, onClick }) {
   return (
     <div className="card" onClick={() => onClick(perfume)}>
@@ -65,8 +83,19 @@ function PerfumeCard({ perfume, onClick }) {
     </div>
   );
 }
-
 function PerfumePopup({ perfume, onClose, onBuyNow }) {
+  const addToCart = () => {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const index = cart.findIndex(item => item.id === perfume.id);
+    if (index > -1) {
+      cart[index].quantity += 1;
+    } else {
+      cart.push({ ...perfume, quantity: 1 });
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${perfume.name} added to cart!`);
+  };
+
   return (
     <div className="popup-overlay">
       <div className="popup">
@@ -78,7 +107,8 @@ function PerfumePopup({ perfume, onClose, onBuyNow }) {
         </div>
         <div className="price">${perfume.price}</div>
         <div className="buttons">
-          <button className="add-to-cart">Add to cart</button>
+          <button className="add-to-cart" onClick={() => addToCart(perfume)}>Add to cart</button>
+
           <button className="buy-now" onClick={onBuyNow}>Buy Now</button>
         </div>
       </div>
@@ -86,35 +116,62 @@ function PerfumePopup({ perfume, onClose, onBuyNow }) {
   );
 }
 
+
 function NavBar({ toggleMenu, setSelectedGender, selectedGender, searchQuery, setSearchQuery }) {
   const [catalogDropdownOpen, setCatalogDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setCatalogDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleGenderClick = (gender) => {
+    setSelectedGender(gender);
+    setCatalogDropdownOpen(false);
+  };
 
   return (
     <nav className="navbar">
-      <div className="navbar-logo">AURUM</div>
-      <div className="navbar-links">
-        <input
-          type="text"
-          placeholder="Search fragrances"
-          className="navbar-search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <span className="navbar-icon">🛒</span>
-        <div className="nav-item" onMouseEnter={() => setCatalogDropdownOpen(true)} onMouseLeave={() => setCatalogDropdownOpen(false)}>
-          <button className="nav-button">Catalog ▾</button>
-          {catalogDropdownOpen && (
-            <div className="dropdown-menu">
-              <button onClick={() => setSelectedGender('men')} className={`dropdown-item ${selectedGender === 'men' ? 'active' : ''}`}>Men</button>
-              <button onClick={() => setSelectedGender('women')} className={`dropdown-item ${selectedGender === 'women' ? 'active' : ''}`}>Women</button>
-              <button onClick={() => setSelectedGender('all')} className={`dropdown-item ${selectedGender === 'all' ? 'active' : ''}`}>All</button>
-            </div>
-          )}
-        </div>
-        <button className="nav-button" onClick={() => window.location.href = '/'}>Home</button>
-        <span className="navbar-icon menu-toggle" onClick={toggleMenu}>☰</span>
+  <div className="navbar-logo">AURUM</div>
+
+  <div className="navbar-center" ref={dropdownRef}>
+  <button className="nav-button" onClick={() => window.location.href = './index2.html'}>Home</button>
+
+  
+
+  <div className="nav-item">
+    <button className="nav-button" onClick={() => setCatalogDropdownOpen(prev => !prev)}>
+      Catalog ▾
+    </button>
+    {catalogDropdownOpen && (
+      <div className="dropdown-menu">
+        <button onClick={() => handleGenderClick('men')} className={`dropdown-item ${selectedGender === 'men' ? 'active' : ''}`}>Men</button>
+        <button onClick={() => handleGenderClick('women')} className={`dropdown-item ${selectedGender === 'women' ? 'active' : ''}`}>Women</button>
+        <button onClick={() => handleGenderClick('all')} className={`dropdown-item ${selectedGender === 'all' ? 'active' : ''}`}>All</button>
       </div>
-    </nav>
+    )}
+  </div>
+</div>
+
+
+  <div className="navbar-right">
+    <input
+      type="text"
+      placeholder="Search fragrances"
+      className="navbar-search"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+    />
+    <span className="navbar-icon" onClick={() => window.location.href = './cart.html'}>🛒</span>
+    {/* <span className="navbar-icon menu-toggle" onClick={toggleMenu}>☰</span> */}
+  </div>
+</nav>
   );
 }
 
@@ -198,20 +255,38 @@ function SidePanel({
     </div>
   );
 }
-
 export default function CatalogPage() {
-  const [selectedPerfume, setSelectedPerfume] = useState(null);
-  const [selectedGender, setSelectedGender] = useState('all');
-  const [selectedBrand, setSelectedBrand] = useState('all');
-  const [selectedScent, setSelectedScent] = useState('all');
-  const [selectedSeason, setSelectedSeason] = useState('all');
-  const [selectedAge, setSelectedAge] = useState('all');
-  const [selectedIntensity, setSelectedIntensity] = useState('all');
-  const [selectedOccasion, setSelectedOccasion] = useState('all');
-  const [selectedOrigin, setSelectedOrigin] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
+  
+  // const [selectedPerfume, setSelectedPerfume] = useState(null);
+  // const [selectedGender, setSelectedGender] = useState('all');
+  // const [selectedBrand, setSelectedBrand] = useState('all');
+  // const [selectedScent, setSelectedScent] = useState('all');
+  // const [selectedSeason, setSelectedSeason] = useState('all');
+  // const [selectedAge, setSelectedAge] = useState('all');
+  // const [selectedIntensity, setSelectedIntensity] = useState('all');
+  // const [selectedOccasion, setSelectedOccasion] = useState('all');
+  // const [selectedOrigin, setSelectedOrigin] = useState('all');
+  // const [searchQuery, setSearchQuery] = useState('');
+  // const [menuOpen, setMenuOpen] = useState(false);
+  // const navigate = useNavigate();
+  const query = useQuery();
+const initialGender = query.get('gender') || 'all';
+const initialQuery = query.get('query') || '';
+
+const [selectedPerfume, setSelectedPerfume] = useState(null);
+const [selectedGender, setSelectedGender] = useState(initialGender);
+const [selectedBrand, setSelectedBrand] = useState('all');
+const [selectedScent, setSelectedScent] = useState('all');
+const [selectedSeason, setSelectedSeason] = useState('all');
+const [selectedAge, setSelectedAge] = useState('all');
+const [selectedIntensity, setSelectedIntensity] = useState('all');
+const [selectedOccasion, setSelectedOccasion] = useState('all');
+const [selectedOrigin, setSelectedOrigin] = useState('all');
+const [searchQuery, setSearchQuery] = useState(initialQuery);
+const [menuOpen, setMenuOpen] = useState(false);
+
+const navigate = useNavigate();
+
 
   const toggleMenu = () => setMenuOpen(prev => !prev);
 
@@ -235,9 +310,36 @@ export default function CatalogPage() {
     );
   });
 
+  const addToCart = (perfume) => {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const existing = cart.find(item => item.name === perfume.name);
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({
+        name: perfume.name,
+        price: perfume.price,
+        image: perfume.image,
+        quantity: 1
+      });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${perfume.name} has been added to your cart.`);
+  };
+  
+
   return (
     <div>
-      <NavBar toggleMenu={toggleMenu} setSelectedGender={setSelectedGender} selectedGender={selectedGender} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <NavBar
+        toggleMenu={toggleMenu}
+        setSelectedGender={setSelectedGender}
+        selectedGender={selectedGender}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onCartClick={() => navigate('/cart')}
+      />
       <div className="catalog-wrapper">
         <div className="catalog-container">
           <div className="grid">
@@ -246,10 +348,11 @@ export default function CatalogPage() {
             ))}
           </div>
           {selectedPerfume && (
-            <PerfumePopup 
-              perfume={selectedPerfume} 
-              onClose={() => setSelectedPerfume(null)} 
-              onBuyNow={() => navigate('/buy-now', { state: { perfume: selectedPerfume } })} 
+            <PerfumePopup
+              perfume={selectedPerfume}
+              onClose={() => setSelectedPerfume(null)}
+              onBuyNow={() => navigate('/buy-now', { state: { perfume: selectedPerfume } })}
+              onAddToCart={() => addToCart(selectedPerfume)}
             />
           )}
         </div>
