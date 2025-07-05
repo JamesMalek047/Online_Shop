@@ -26,28 +26,36 @@
 <body>
   <!-- Navigation Bar -->
   <header class="navbar">
+  <div class="navbar-left">
     <div class="logo">AURUM</div>
-    <form class="search" id="searchForm">
-  <i class="fas fa-search"></i>
-  <input type="text" id="searchInput" name="query" placeholder="Search Fragrances">
-</form>
-
-    <div class="nav-links">
-  <a href="index.html" class="nav-btn">Home</a>
-  <div class="dropdown">
-    <button class="nav-btn dropdown-toggle">Catalog</button>
-    <div class="dropdown-menu">
-      <a href="/catalog?gender=men">Men</a>
-      <a href="/catalog?gender=women">Women</a>
-      <a href="/catalog">All</a>
-    </div>
   </div>
-  <a href="cart.html" class="cart-link" aria-label="Go to Cart">
-    <i class="fas fa-shopping-cart"></i>
-  </a>
+
+  <div class="navbar-center">
+    <a href="index.html" class="nav-btn">Home</a>
+    <div class="dropdown">
+  <button class="nav-btn dropdown-toggle">Catalog <span class="arrow-down">&#9662;</span></button>
+  <div class="dropdown-menu">
+    <a href="/catalog?gender=men">Men</a>
+    <a href="/catalog?gender=women">Women</a>
+    <a href="/catalog">All</a>
+  </div>
 </div>
 
-  </header>
+
+  </div>
+
+  <div class="navbar-right">
+    <form class="search" id="searchForm">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" name="query" placeholder="Search Fragrances" />
+    </form>
+    <a href="cart.html" class="cart-link" aria-label="Go to Cart">
+      <i class="fas fa-shopping-cart"></i>
+    </a>
+  </div>
+</header>
+
+
 
   <!-- Hero Section -->
   <main class="hero">
