@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { Link } from "react-router-dom";
+
 
 import './CatalogPage.css';
 
@@ -117,63 +119,145 @@ function PerfumePopup({ perfume, onClose, onBuyNow }) {
 }
 
 
-function NavBar({ toggleMenu, setSelectedGender, selectedGender, searchQuery, setSearchQuery }) {
-  const [catalogDropdownOpen, setCatalogDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
+// function NavBar({ toggleMenu, setSelectedGender, selectedGender, searchQuery, setSearchQuery }) {
+//   const [catalogDropdownOpen, setCatalogDropdownOpen] = useState(false);
+//   const dropdownRef = useRef(null);
+//   const navigate = useNavigate();
 
+//   useEffect(() => {
+//     function handleClickOutside(event) {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//         setCatalogDropdownOpen(false);
+//       }
+//     }
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => document.removeEventListener("mousedown", handleClickOutside);
+//   }, []);
+
+//   const handleGenderClick = (gender) => {
+//     setSelectedGender(gender);
+//     setCatalogDropdownOpen(false);
+//   };
+
+//   return (
+//     <nav className="navbar">
+//   <div className="navbar-logo">AURUM</div>
+
+//   <div className="navbar-center" ref={dropdownRef}>
+//   <button className="nav-button" onClick={() => window.location.href = './index2.html'}>Home</button>
+
+  
+
+//   <div className="nav-item">
+//     <button className="nav-button" onClick={() => setCatalogDropdownOpen(prev => !prev)}>
+//       Catalog ▾
+//     </button>
+//     {catalogDropdownOpen && (
+//       <div className="dropdown-menu">
+//         <button onClick={() => handleGenderClick('men')} className={`dropdown-item ${selectedGender === 'men' ? 'active' : ''}`}>Men</button>
+//         <button onClick={() => handleGenderClick('women')} className={`dropdown-item ${selectedGender === 'women' ? 'active' : ''}`}>Women</button>
+//         <button onClick={() => handleGenderClick('all')} className={`dropdown-item ${selectedGender === 'all' ? 'active' : ''}`}>All</button>
+//       </div>
+//     )}
+//   </div>
+// </div>
+
+
+//   <div className="navbar-right">
+//     <input
+//       type="text"
+//       placeholder="Search fragrances"
+//       className="navbar-search"
+//       value={searchQuery}
+//       onChange={(e) => setSearchQuery(e.target.value)}
+//     />
+//     <span className="navbar-icon" onClick={() => window.location.href = './cart.html'}>🛒</span>
+//     {/* <span className="navbar-icon menu-toggle" onClick={toggleMenu}>☰</span> */}
+//   </div>
+// </nav>
+ 
+//   );
+// }
+
+function NavBar({ setSelectedGender, selectedGender, searchQuery, setSearchQuery }) {
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Close the dropdown when clicking outside
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setCatalogDropdownOpen(false);
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownVisible(false);
       }
-    }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleGenderClick = (gender) => {
     setSelectedGender(gender);
-    setCatalogDropdownOpen(false);
+    setDropdownVisible(false);
+    navigate(`/catalog?gender=${gender}`);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/catalog?query=${encodeURIComponent(searchQuery)}`);
+    }
   };
 
   return (
-    <nav className="navbar">
-  <div className="navbar-logo">AURUM</div>
-
-  <div className="navbar-center" ref={dropdownRef}>
-  <button className="nav-button" onClick={() => window.location.href = './index2.html'}>Home</button>
-
-  
-
-  <div className="nav-item">
-    <button className="nav-button" onClick={() => setCatalogDropdownOpen(prev => !prev)}>
-      Catalog ▾
-    </button>
-    {catalogDropdownOpen && (
-      <div className="dropdown-menu">
-        <button onClick={() => handleGenderClick('men')} className={`dropdown-item ${selectedGender === 'men' ? 'active' : ''}`}>Men</button>
-        <button onClick={() => handleGenderClick('women')} className={`dropdown-item ${selectedGender === 'women' ? 'active' : ''}`}>Women</button>
-        <button onClick={() => handleGenderClick('all')} className={`dropdown-item ${selectedGender === 'all' ? 'active' : ''}`}>All</button>
+    <header className="navbar">
+      <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
+      
+      </link>
+      <div className="navbar-left">
+        <div className="logo">AURUM</div>
       </div>
-    )}
-  </div>
-</div>
 
+      <div className="navbar-center">
+        <a href="index2.html" className="nav-btn">Home</a>
 
-  <div className="navbar-right">
-    <input
-      type="text"
-      placeholder="Search fragrances"
-      className="navbar-search"
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-    />
-    <span className="navbar-icon" onClick={() => window.location.href = './cart.html'}>🛒</span>
-    {/* <span className="navbar-icon menu-toggle" onClick={toggleMenu}>☰</span> */}
-  </div>
-</nav>
+        <div className="dropdown" ref={dropdownRef}>
+          <button
+            className="nav-btn dropdown-toggle"
+            onClick={() => setDropdownVisible(!dropdownVisible)}
+          >
+            Catalog ▾
+          </button>
+
+          {dropdownVisible && (
+            <div className="dropdown-menu">
+              <button onClick={() => handleGenderClick('men')}>Men</button>
+              <button onClick={() => handleGenderClick('women')}>Women</button>
+              <button onClick={() => handleGenderClick('all')}>All</button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="navbar-right">
+        <form className="search" onSubmit={handleSearchSubmit}>
+          <i className="fas fa-search"></i>
+          <input
+            type="text"
+            placeholder="Search Fragrances"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </form>
+        <a href="cart.html" className="cart-link" aria-label="Go to Cart">
+          <i className="fas fa-shopping-cart"></i>
+        </a>
+      </div>
+    </header>
   );
 }
+
+
+
 
 function SidePanel({
   selectedBrand, setSelectedBrand,

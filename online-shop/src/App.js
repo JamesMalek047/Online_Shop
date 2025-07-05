@@ -5,7 +5,7 @@ import SurveyPage from './pages/SurveyPage';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/app">
       <Routes>
         <Route path="/catalog" element={<CatalogPage />} />
         <Route path="/buy-now" element={<BuyNowPage />} />

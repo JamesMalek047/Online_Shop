@@ -423,10 +423,11 @@ button:hover {
   gap: 1rem;
   margin-right: 2rem;
 }
+
 .nav-btn {
   background: transparent;
   border: 2px solid #5a1a1a;
-  padding: 0.6rem 1.5rem;
+  padding: 0.5rem 1rem;
   border-radius: 999px;
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
@@ -434,10 +435,6 @@ button:hover {
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
-  font-size: 1rem;
-  display: inline-block;
-  min-width: 100px; /* Optional: ensures equal button width */
-  text-align: center;
 }
 
 .nav-btn:hover {
@@ -445,7 +442,7 @@ button:hover {
   color: #fff;
 }
 
-.dropdown-toggle {
+.dropdown {
   position: relative;
 }
 
@@ -460,7 +457,6 @@ button:hover {
   display: none;
   z-index: 1000;
   border-radius: 0.5rem;
-  min-width: 120px;
 }
 
 .dropdown:hover .dropdown-menu {
@@ -479,7 +475,6 @@ button:hover {
   background-color: #5a1a1a;
   color: white;
 }
-
 /* NAVBAR STRUCTURE */
 .navbar {
   display: flex;
